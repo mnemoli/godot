@@ -1655,6 +1655,17 @@ void Tree::select_single_item(TreeItem *p_selected, TreeItem *p_current, int p_c
 	}
 }
 
+void Tree::finished_with_multiselect() {
+	Array arr;
+	TreeItem *c = _get_next_selected(nullptr);
+	do {
+		arr.push_back(c);
+		c = _get_next_selected(c);
+	} while (c);
+
+	emit_signal("multi_select_complete", arr);
+}
+
 Rect2 Tree::search_item_rect(TreeItem *p_from, TreeItem *p_item) {
 
 	return Rect2();
@@ -1839,6 +1850,7 @@ int Tree::propagate_mouse_event(const Point2i &p_pos, int x_ofs, int y_ofs, bool
 						bool inrange = false;
 
 						select_single_item(p_item, root, col, selected_item, &inrange);
+						finished_with_multiselect();
 						if (p_button == BUTTON_RIGHT) {
 							emit_signal("item_rmb_selected", get_local_mouse_position());
 						}
@@ -1853,6 +1865,7 @@ int Tree::propagate_mouse_event(const Point2i &p_pos, int x_ofs, int y_ofs, bool
 
 							if (p_button != BUTTON_RIGHT || !c.selected) {
 								select_single_item(p_item, root, col);
+								finished_with_multiselect();
 							}
 
 							if (p_button == BUTTON_RIGHT) {
@@ -3181,6 +3194,8 @@ void Tree::item_selected(int p_column, TreeItem *p_item) {
 		p_item->cells.write[p_column].selected = true;
 		//emit_signal("multi_selected",p_item,p_column,true); - NO this is for TreeItem::select
 
+		finished_with_multiselect();
+
 		selected_col = p_column;
 	} else {
 
@@ -3195,6 +3210,9 @@ void Tree::item_deselected(int p_column, TreeItem *p_item) {
 		p_item->cells.write[p_column].selected = false;
 	}
 	update();
+
+	if (select_mode == SELECT_MULTI)
+		finished_with_multiselect();
 }
 
 void Tree::set_select_mode(SelectMode p_mode) {
@@ -4032,6 +4050,7 @@ void Tree::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("item_selected"));
 	ADD_SIGNAL(MethodInfo("cell_selected"));
 	ADD_SIGNAL(MethodInfo("multi_selected", PropertyInfo(Variant::OBJECT, "item", PROPERTY_HINT_RESOURCE_TYPE, "TreeItem"), PropertyInfo(Variant::INT, "column"), PropertyInfo(Variant::BOOL, "selected")));
+	ADD_SIGNAL(MethodInfo("multi_select_complete", PropertyInfo(Variant::ARRAY, "items", PROPERTY_HINT_RESOURCE_TYPE, "TreeItem")));
 	ADD_SIGNAL(MethodInfo("item_rmb_selected", PropertyInfo(Variant::VECTOR2, "position")));
 	ADD_SIGNAL(MethodInfo("empty_rmb", PropertyInfo(Variant::VECTOR2, "position")));
 	ADD_SIGNAL(MethodInfo("empty_tree_rmb_selected", PropertyInfo(Variant::VECTOR2, "position")));

@@ -431,6 +431,15 @@ void FileSystemDock::_tree_multi_selected(Object *p_item, int p_column, bool p_s
 	}
 }
 
+void FileSystemDock::_multi_select_complete(Array tree_items) {
+	Vector<String> paths;
+	for (int i = 0; i < tree_items.size(); i++) {
+		TreeItem *item = cast_to<TreeItem>(tree_items[i]);
+		paths.push_back(item->get_metadata(0));
+	}
+	emit_signal("files_selected", paths);
+}
+
 String FileSystemDock::get_selected_path() const {
 	if (path.ends_with("/"))
 		return path;
@@ -2510,6 +2519,7 @@ void FileSystemDock::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_bw_history"), &FileSystemDock::_bw_history);
 	ClassDB::bind_method(D_METHOD("_fs_changed"), &FileSystemDock::_fs_changed);
 	ClassDB::bind_method(D_METHOD("_tree_multi_selected"), &FileSystemDock::_tree_multi_selected);
+	ClassDB::bind_method(D_METHOD("_multi_select_complete"), &FileSystemDock::_multi_select_complete);
 	ClassDB::bind_method(D_METHOD("_make_dir_confirm"), &FileSystemDock::_make_dir_confirm);
 	ClassDB::bind_method(D_METHOD("_make_scene_confirm"), &FileSystemDock::_make_scene_confirm);
 	ClassDB::bind_method(D_METHOD("_resource_created"), &FileSystemDock::_resource_created);
@@ -2538,6 +2548,7 @@ void FileSystemDock::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("folder_removed", PropertyInfo(Variant::STRING, "folder")));
 	ADD_SIGNAL(MethodInfo("files_moved", PropertyInfo(Variant::STRING, "old_file"), PropertyInfo(Variant::STRING, "new_file")));
 	ADD_SIGNAL(MethodInfo("folder_moved", PropertyInfo(Variant::STRING, "old_folder"), PropertyInfo(Variant::STRING, "new_file")));
+	ADD_SIGNAL(MethodInfo("files_selected", PropertyInfo(Variant::POOL_STRING_ARRAY, "paths")));
 
 	ADD_SIGNAL(MethodInfo("display_mode_changed"));
 }
@@ -2625,6 +2636,7 @@ FileSystemDock::FileSystemDock(EditorNode *p_editor) {
 
 	tree->connect("item_activated", this, "_tree_activate_file");
 	tree->connect("multi_selected", this, "_tree_multi_selected");
+	tree->connect("multi_select_complete", this, "_multi_select_complete");
 	tree->connect("item_rmb_selected", this, "_tree_rmb_select");
 	tree->connect("empty_rmb", this, "_tree_rmb_empty");
 	tree->connect("nothing_selected", this, "_tree_empty_selected");
