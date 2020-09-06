@@ -438,6 +438,15 @@ void FileSystemDock::_tree_multi_selected(Object *p_item, int p_column, bool p_s
 	}
 }
 
+void FileSystemDock::_tree_multi_select_complete(Array tree_items) {
+	Vector<String> paths;
+	for (int i = 0; i < tree_items.size(); i++) {
+		TreeItem *item = cast_to<TreeItem>(tree_items[i]);
+		paths.push_back(item->get_metadata(0));
+	}
+	emit_signal("files_selected", paths);
+}
+
 String FileSystemDock::get_selected_path() const {
 	if (path.ends_with("/")) {
 		return path;
@@ -2537,6 +2546,7 @@ void FileSystemDock::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("folder_removed", PropertyInfo(Variant::STRING, "folder")));
 	ADD_SIGNAL(MethodInfo("files_moved", PropertyInfo(Variant::STRING, "old_file"), PropertyInfo(Variant::STRING, "new_file")));
 	ADD_SIGNAL(MethodInfo("folder_moved", PropertyInfo(Variant::STRING, "old_folder"), PropertyInfo(Variant::STRING, "new_file")));
+	ADD_SIGNAL(MethodInfo("files_selected", PropertyInfo(Variant::PACKED_STRING_ARRAY, "paths")));
 
 	ADD_SIGNAL(MethodInfo("display_mode_changed"));
 }
@@ -2626,6 +2636,7 @@ FileSystemDock::FileSystemDock(EditorNode *p_editor) {
 
 	tree->connect("item_activated", callable_mp(this, &FileSystemDock::_tree_activate_file));
 	tree->connect("multi_selected", callable_mp(this, &FileSystemDock::_tree_multi_selected));
+	tree->connect("multi_select_complete", callable_mp(this, &FileSystemDock::_tree_multi_select_complete));
 	tree->connect("item_rmb_selected", callable_mp(this, &FileSystemDock::_tree_rmb_select));
 	tree->connect("empty_rmb", callable_mp(this, &FileSystemDock::_tree_rmb_empty));
 	tree->connect("nothing_selected", callable_mp(this, &FileSystemDock::_tree_empty_selected));
