@@ -549,8 +549,8 @@ void Viewport::_notification(int p_what) {
 							Vector2 point = canvas_transform.affine_inverse().xform(pos);
 
 							int rc = ss2d->intersect_point_on_canvas(point, canvas_layer_id, res, 64, Set<RID>(), 0xFFFFFFFF, true, true, true);
-							for (int i = 0; i < rc; i++) {
-
+							if (rc > 0) {
+								int i = rc - 1;
 								if (res[i].collider_id && res[i].collider) {
 									CollisionObject2D *co = Object::cast_to<CollisionObject2D>(res[i].collider);
 									if (co) {
@@ -576,6 +576,9 @@ void Viewport::_notification(int p_what) {
 									}
 								}
 							}
+							//for (int i = 0; i < rc; i++) {
+								
+							//}
 						}
 
 						if (is_mouse) {
