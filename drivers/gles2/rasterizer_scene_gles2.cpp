@@ -2194,6 +2194,7 @@ void RasterizerSceneGLES2::_render_render_list(RenderList::Element **p_elements,
 	ShadowAtlas *shadow_atlas = shadow_atlas_owner.getornull(p_shadow_atlas);
 
 	Vector2 viewport_size = state.viewport_size;
+	float ortho_size = state.ortho_size;
 
 	Vector2 screen_pixel_size = state.screen_pixel_size;
 
@@ -2558,6 +2559,8 @@ void RasterizerSceneGLES2::_render_render_list(RenderList::Element **p_elements,
 			state.scene_shader.set_uniform(SceneShaderGLES2::TIME, storage->frame.time[0]);
 
 			state.scene_shader.set_uniform(SceneShaderGLES2::VIEWPORT_SIZE, viewport_size);
+			state.scene_shader.set_uniform(SceneShaderGLES2::ORTHO_SIZE, ortho_size);
+			state.scene_shader.set_uniform(SceneShaderGLES2::CAMERA_ROTATION, p_view_transform.basis.get_euler_xyz());
 
 			state.scene_shader.set_uniform(SceneShaderGLES2::SCREEN_PIXEL_SIZE, screen_pixel_size);
 		}
@@ -3179,7 +3182,7 @@ void RasterizerSceneGLES2::_post_process(Environment *env, const CameraMatrix &p
 	state.tonemap_shader.set_conditional(TonemapShaderGLES2::USE_COLOR_CORRECTION, false);
 }
 
-void RasterizerSceneGLES2::render_scene(const Transform &p_cam_transform, const CameraMatrix &p_cam_projection, bool p_cam_ortogonal, InstanceBase **p_cull_result, int p_cull_count, RID *p_light_cull_result, int p_light_cull_count, RID *p_reflection_probe_cull_result, int p_reflection_probe_cull_count, RID p_environment, RID p_shadow_atlas, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass) {
+void RasterizerSceneGLES2::render_scene(const Transform &p_cam_transform, const CameraMatrix &p_cam_projection, bool p_cam_ortogonal, float p_cam_orthogonal_size, InstanceBase **p_cull_result, int p_cull_count, RID *p_light_cull_result, int p_light_cull_count, RID *p_reflection_probe_cull_result, int p_reflection_probe_cull_count, RID p_environment, RID p_shadow_atlas, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass) {
 
 	Transform cam_transform = p_cam_transform;
 
@@ -3240,6 +3243,7 @@ void RasterizerSceneGLES2::render_scene(const Transform &p_cam_transform, const 
 	state.used_screen_texture = false;
 	state.viewport_size.x = viewport_width;
 	state.viewport_size.y = viewport_height;
+	state.ortho_size = p_cam_orthogonal_size;
 	state.screen_pixel_size.x = 1.0 / viewport_width;
 	state.screen_pixel_size.y = 1.0 / viewport_height;
 

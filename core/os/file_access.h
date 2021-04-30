@@ -104,7 +104,9 @@ public:
 	virtual bool eof_reached() const = 0; ///< reading passed EOF
 
 	virtual uint8_t get_8() const = 0; ///< get a byte
+	virtual int8_t get_s8() const;
 	virtual uint16_t get_16() const; ///< get 16 bits uint
+	virtual int16_t get_s16() const;
 	virtual uint32_t get_32() const; ///< get 32 bits uint
 	virtual uint64_t get_64() const; ///< get 64 bits uint
 

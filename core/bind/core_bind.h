@@ -520,7 +520,9 @@ public:
 	bool eof_reached() const; // Reading passed EOF.
 
 	uint8_t get_8() const; // Get a byte.
+	int8_t get_s8() const;
 	uint16_t get_16() const; // Get 16 bits uint.
+	int16_t get_s16() const;
 	uint32_t get_32() const; // Get 32 bits uint.
 	uint64_t get_64() const; // Get 64 bits uint.
 

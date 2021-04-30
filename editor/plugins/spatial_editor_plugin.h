@@ -38,6 +38,7 @@
 #include "scene/3d/light.h"
 #include "scene/3d/visual_instance.h"
 #include "scene/gui/panel_container.h"
+#include "scene/3d/camera.h"
 
 class Camera;
 class SpatialEditor;
@@ -678,6 +679,7 @@ private:
 	SpinBox *settings_fov;
 	SpinBox *settings_znear;
 	SpinBox *settings_zfar;
+	CheckBox *settings_aspect;
 
 	void _snap_changed();
 	void _snap_update();
@@ -744,6 +746,13 @@ public:
 	float get_znear() const { return settings_znear->get_value(); }
 	float get_zfar() const { return settings_zfar->get_value(); }
 	float get_fov() const { return settings_fov->get_value(); }
+	Camera::KeepAspect get_aspect_keep() const {
+		bool x = settings_aspect->is_pressed();
+		if (x)
+			return Camera::KeepAspect::KEEP_WIDTH;
+		else
+			return Camera::KeepAspect::KEEP_HEIGHT;
+	}
 
 	Transform get_gizmo_transform() const { return gizmo.transform; }
 	bool is_gizmo_visible() const { return gizmo.visible; }

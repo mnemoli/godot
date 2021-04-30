@@ -50,7 +50,8 @@ public:
 
 	enum KeepAspect {
 		KEEP_WIDTH,
-		KEEP_HEIGHT
+		KEEP_HEIGHT,
+		NONE
 	};
 
 	enum DopplerTracking {

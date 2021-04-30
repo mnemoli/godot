@@ -986,6 +986,8 @@ ShaderCompilerGLES2::ShaderCompilerGLES2() {
 
 	actions[VS::SHADER_SPATIAL].renames["TIME"] = "time";
 	actions[VS::SHADER_SPATIAL].renames["VIEWPORT_SIZE"] = "viewport_size";
+	actions[VS::SHADER_SPATIAL].renames["ORTHO_SIZE"] = "ortho_size";
+	actions[VS::SHADER_SPATIAL].renames["CAMERA_ROTATION"] = "camera_rotation";
 
 	actions[VS::SHADER_SPATIAL].renames["FRAGCOORD"] = "gl_FragCoord";
 	actions[VS::SHADER_SPATIAL].renames["FRONT_FACING"] = "gl_FrontFacing";

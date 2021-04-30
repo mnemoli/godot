@@ -3522,6 +3522,7 @@ void RasterizerSceneGLES3::_render_mrts(Environment *env, const CameraMatrix &p_
 		state.ssr_shader.set_uniform(ScreenSpaceReflectionShaderGLES3::PROJECTION, p_cam_projection);
 		state.ssr_shader.set_uniform(ScreenSpaceReflectionShaderGLES3::INVERSE_PROJECTION, p_cam_projection.inverse());
 		state.ssr_shader.set_uniform(ScreenSpaceReflectionShaderGLES3::VIEWPORT_SIZE, Size2(ssr_w, ssr_h));
+		state.ssr_shader.set_uniform(ScreenSpaceReflectionShaderGLES3::ORTHO_SIZE, 1.0);
 		//state.ssr_shader.set_uniform(ScreenSpaceReflectionShaderGLES3::FRAME_INDEX,int(render_pass));
 		state.ssr_shader.set_uniform(ScreenSpaceReflectionShaderGLES3::FILTER_MIPMAP_LEVELS, float(storage->frame.current_rt->effects.mip_maps[0].sizes.size()));
 		state.ssr_shader.set_uniform(ScreenSpaceReflectionShaderGLES3::NUM_STEPS, env->ssr_max_steps);
@@ -4104,7 +4105,7 @@ void RasterizerSceneGLES3::_post_process(Environment *env, const CameraMatrix &p
 	state.tonemap_shader.set_conditional(TonemapShaderGLES3::V_FLIP, false);
 }
 
-void RasterizerSceneGLES3::render_scene(const Transform &p_cam_transform, const CameraMatrix &p_cam_projection, bool p_cam_ortogonal, InstanceBase **p_cull_result, int p_cull_count, RID *p_light_cull_result, int p_light_cull_count, RID *p_reflection_probe_cull_result, int p_reflection_probe_cull_count, RID p_environment, RID p_shadow_atlas, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass) {
+void RasterizerSceneGLES3::render_scene(const Transform &p_cam_transform, const CameraMatrix &p_cam_projection, bool p_cam_ortogonal, float p_cam_orthogonal_size, InstanceBase **p_cull_result, int p_cull_count, RID *p_light_cull_result, int p_light_cull_count, RID *p_reflection_probe_cull_result, int p_reflection_probe_cull_count, RID p_environment, RID p_shadow_atlas, RID p_reflection_atlas, RID p_reflection_probe, int p_reflection_probe_pass) {
 
 	//first of all, make a new render pass
 	render_pass++;

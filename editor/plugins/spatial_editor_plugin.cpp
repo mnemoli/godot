@@ -348,6 +348,7 @@ void SpatialEditorViewport::_update_camera(float p_interp_delta) {
 			float half_fov = Math::deg2rad(get_fov()) / 2.0;
 			float height = 2.0 * cursor.distance * Math::tan(half_fov);
 			camera->set_orthogonal(height, get_znear(), get_zfar());
+			camera->set_keep_aspect_mode(spatial_editor->get_aspect_keep());
 		} else {
 			camera->set_perspective(get_fov(), get_znear(), get_zfar());
 		}
@@ -4567,6 +4568,7 @@ Dictionary SpatialEditor::get_state() const {
 	d["fov"] = get_fov();
 	d["znear"] = get_znear();
 	d["zfar"] = get_zfar();
+	d["aspectKeep"] = get_aspect_keep();
 
 	Dictionary gizmos_status;
 	for (int i = 0; i < gizmo_plugins_by_name.size(); i++) {
@@ -6446,6 +6448,9 @@ SpatialEditor::SpatialEditor(EditorNode *p_editor) {
 	settings_zfar->set_step(0.01);
 	settings_zfar->set_value(EDITOR_DEF("editors/3d/default_z_far", 1500));
 	settings_vbc->add_margin_child(TTR("View Z-Far:"), settings_zfar);
+
+	settings_aspect = memnew(CheckBox);
+	settings_vbc->add_margin_child(TTR("Aspect keep width:"), settings_aspect);
 
 	for (uint32_t i = 0; i < VIEWPORTS_COUNT; ++i) {
 		settings_dialog->connect("confirmed", viewports[i], "_update_camera", varray(0.0));

@@ -190,6 +190,27 @@ uint16_t FileAccess::get_16() const {
 
 	return res;
 }
+
+int16_t FileAccess::get_s16() const {
+	int16_t res;
+
+	uint16_t unsign = get_16();
+	memcpy(&res, &unsign, 2);
+
+	return res;
+}
+
+
+
+int8_t FileAccess::get_s8() const {
+	int8_t res;
+
+	uint8_t unsign = get_8();
+	memcpy(&res, &unsign, 2);
+
+	return res;
+}
+
 uint32_t FileAccess::get_32() const {
 
 	uint32_t res;

@@ -2045,10 +2045,20 @@ uint8_t _File::get_8() const {
 	ERR_FAIL_COND_V_MSG(!f, 0, "File must be opened before use.");
 	return f->get_8();
 }
+int8_t _File::get_s8() const {
+
+	ERR_FAIL_COND_V_MSG(!f, 0, "File must be opened before use.");
+	return f->get_s8();
+}
 uint16_t _File::get_16() const {
 
 	ERR_FAIL_COND_V_MSG(!f, 0, "File must be opened before use.");
 	return f->get_16();
+}
+int16_t _File::get_s16() const {
+
+	ERR_FAIL_COND_V_MSG(!f, 0, "File must be opened before use.");
+	return f->get_s16();
 }
 uint32_t _File::get_32() const {
 
@@ -2316,7 +2326,9 @@ void _File::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_len"), &_File::get_len);
 	ClassDB::bind_method(D_METHOD("eof_reached"), &_File::eof_reached);
 	ClassDB::bind_method(D_METHOD("get_8"), &_File::get_8);
+	ClassDB::bind_method(D_METHOD("get_s8"), &_File::get_s8);
 	ClassDB::bind_method(D_METHOD("get_16"), &_File::get_16);
+	ClassDB::bind_method(D_METHOD("get_s16"), &_File::get_s16);
 	ClassDB::bind_method(D_METHOD("get_32"), &_File::get_32);
 	ClassDB::bind_method(D_METHOD("get_64"), &_File::get_64);
 	ClassDB::bind_method(D_METHOD("get_float"), &_File::get_float);
