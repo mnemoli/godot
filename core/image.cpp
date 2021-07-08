@@ -37,6 +37,7 @@
 #include "core/math/math_funcs.h"
 #include "core/os/copymem.h"
 #include "core/print_string.h"
+#include "scene/resources/texture.h"
 
 #include "thirdparty/misc/hq2x.h"
 
@@ -345,15 +346,13 @@ void Image::get_mipmap_offset_size_and_dimensions(int p_mipmap, int &r_ofs, int 
 
 void Image::get_or_load_petz_palette() {
 	if (petzpalette.empty()) {
-		Ref<Image> palette_image;
-		palette_image.instance();
-		ImageLoader::load_image("res://resources/textures/petzpalette.png", palette_image);
+		StreamTexture *actual_image = Object::cast_to<StreamTexture>(*(ResourceLoader::load("res://resources/textures/petzpalette.png")));
+		Ref<Image> palette_image = actual_image->get_data();
 		palette_image->lock();
 		for (int i = 0; i < palette_image->get_width(); i++) {
 			petzpalette.push_back(palette_image->get_pixel(i, 0));
 		}
 		palette_image->unlock();
-		palette_image.unref();
 	}
 }
 
