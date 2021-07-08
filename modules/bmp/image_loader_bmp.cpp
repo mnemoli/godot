@@ -36,7 +36,10 @@ Error ImageLoaderBMP::convert_to_image(Ref<Image> p_image,
 		const uint8_t *p_buffer,
 		const uint8_t *p_color_buffer,
 		const uint32_t color_table_size,
-		const bmp_header_s &p_header) {
+		const bmp_header_s &p_header,
+		const bool p_force_to_palette,
+		const PoolColorArray* p_palette,
+		const bool p_return_as_indexed) {
 
 	Error err = OK;
 
@@ -94,6 +97,10 @@ Error ImageLoaderBMP::convert_to_image(Ref<Image> p_image,
 
 		for (uint64_t i = 0; i < height; i++) {
 			const uint8_t *line_ptr = line;
+
+			if (bits_per_pixel != 8 && p_return_as_indexed) {
+				return Error::ERR_INVALID_PARAMETER;
+			}
 
 			for (unsigned int j = 0; j < w; j++) {
 				switch (bits_per_pixel) {
@@ -164,7 +171,10 @@ Error ImageLoaderBMP::convert_to_image(Ref<Image> p_image,
 
 			// Palette data
 			PoolVector<uint8_t> palette_data;
-			palette_data.resize(color_table_size * 4);
+			if (p_return_as_indexed)
+				palette_data.resize(color_table_size);
+			else
+				palette_data.resize(color_table_size * 4);
 
 			PoolVector<uint8_t>::Write palette_data_w = palette_data.write();
 			uint8_t *pal = palette_data_w.ptr();
@@ -174,38 +184,102 @@ Error ImageLoaderBMP::convert_to_image(Ref<Image> p_image,
 			for (unsigned int i = 0; i < color_table_size; ++i) {
 				uint32_t color = *((uint32_t *)cb);
 
-				pal[i * 4 + 0] = (color >> 16) & 0xff;
-				pal[i * 4 + 1] = (color >> 8) & 0xff;
-				pal[i * 4 + 2] = (color)&0xff;
-				pal[i * 4 + 3] = 0xff;
+				if (p_force_to_palette) {
+					Color color_from_original_image_palette = Color(((color >> 16) & 0xff) / 255.0, ((color >> 8) & 0xff) / 255.0, ((color)&0xff) / 255.0).to_linear();
+					Color palette_color = (*p_palette)[i].to_linear();
+					unsigned int nearest_color_index = i;
+					Color nearest_color = palette_color;
+					float lowest;
+					lowest = abs(palette_color.g - color_from_original_image_palette.g) + abs(palette_color.r - color_from_original_image_palette.r) + abs(palette_color.b - color_from_original_image_palette.b);
+					if (lowest > 0.0) {
+						for (unsigned int j = i + 1; j < (*p_palette).size() + i; ++j) {
+							unsigned int wrapped_j = j % (*p_palette).size();
+							palette_color = (*p_palette)[wrapped_j].to_linear();
+							float diff = abs(palette_color.g - color_from_original_image_palette.g);
+							if (diff < lowest) {
+								diff += abs(palette_color.r - color_from_original_image_palette.r);
+								if (diff < lowest) {
+									diff += abs(palette_color.b - color_from_original_image_palette.b);
+									if (diff < lowest) {
+										if (diff == 0.0) {
+											nearest_color_index = wrapped_j;
+											nearest_color = palette_color;
+											break;
+										}
+										lowest = diff;
+										nearest_color_index = wrapped_j;
+										nearest_color = palette_color;
+									}
+								}
+							}
+						}
+					}
+					if (p_return_as_indexed) {
+						pal[i] = nearest_color_index;
+						cb += 4;
+					} else {
+						pal[i * 4 + 0] = nearest_color.r;
+						pal[i * 4 + 1] = nearest_color.g;
+						pal[i * 4 + 2] = nearest_color.b;
+						pal[i * 4 + 3] = 0xff;
 
-				cb += 4;
+						cb += 4;
+					}
+					
+
+				} else {
+					pal[i * 4 + 0] = (color >> 16) & 0xff;
+					pal[i * 4 + 1] = (color >> 8) & 0xff;
+					pal[i * 4 + 2] = (color)&0xff;
+					pal[i * 4 + 3] = 0xff;
+
+					cb += 4;
+				}
 			}
-			// Extend palette to image
-			PoolVector<uint8_t> extended_data;
-			extended_data.resize(data.size() * 4);
 
-			PoolVector<uint8_t>::Write ex_w = extended_data.write();
-			uint8_t *dest = ex_w.ptr();
+			if (p_return_as_indexed) {
+				PoolVector<uint8_t> output_data;
+				output_data.resize(data.size());
 
-			const int num_pixels = width * height;
+				PoolVector<uint8_t>::Write ex_w = output_data.write();
+				uint8_t *dest = ex_w.ptr();
 
-			for (int i = 0; i < num_pixels; i++) {
-				dest[0] = pal[write_buffer[i] * 4 + 0];
-				dest[1] = pal[write_buffer[i] * 4 + 1];
-				dest[2] = pal[write_buffer[i] * 4 + 2];
-				dest[3] = pal[write_buffer[i] * 4 + 3];
+				const int num_pixels = width * height;
 
-				dest += 4;
+				for (int i = 0; i < num_pixels; i++) {
+					uint8_t blah2 = write_buffer[i];
+					uint8_t blah = pal[blah2];
+					dest[i] = blah;
+				}
+				p_image->create(width, height, 0, Image::FORMAT_R8, output_data);
+				
+			} else {
+				// Extend palette to image
+				PoolVector<uint8_t> extended_data;
+				extended_data.resize(data.size() * 4);
+
+				PoolVector<uint8_t>::Write ex_w = extended_data.write();
+				uint8_t *dest = ex_w.ptr();
+
+				const int num_pixels = width * height;
+
+				for (int i = 0; i < num_pixels; i++) {
+					dest[0] = pal[write_buffer[i] * 4 + 0];
+					dest[1] = pal[write_buffer[i] * 4 + 1];
+					dest[2] = pal[write_buffer[i] * 4 + 2];
+					dest[3] = pal[write_buffer[i] * 4 + 3];
+
+					dest += 4;
+				}
+				p_image->create(width, height, 0, Image::FORMAT_RGBA8, extended_data);
 			}
-			p_image->create(width, height, 0, Image::FORMAT_RGBA8, extended_data);
 		}
 	}
 	return err;
 }
 
 Error ImageLoaderBMP::load_image(Ref<Image> p_image, FileAccess *f,
-		bool p_force_linear, float p_scale) {
+		bool p_force_linear, float p_scale, float p_force_to_palette, PoolColorArray *palette, bool p_return_as_indexed) {
 
 	bmp_header_s bmp_header;
 	Error err = ERR_INVALID_DATA;
@@ -288,7 +362,7 @@ Error ImageLoaderBMP::load_image(Ref<Image> p_image, FileAccess *f,
 				PoolVector<uint8_t>::Read bmp_buffer_r = bmp_buffer.read();
 				PoolVector<uint8_t>::Read bmp_color_table_r = bmp_color_table.read();
 				err = convert_to_image(p_image, bmp_buffer_r.ptr(),
-						bmp_color_table_r.ptr(), color_table_size, bmp_header);
+						bmp_color_table_r.ptr(), color_table_size, bmp_header, p_force_to_palette, palette, p_return_as_indexed);
 			}
 			f->close();
 		}

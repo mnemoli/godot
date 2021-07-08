@@ -148,8 +148,8 @@ Ref<Image> RasterizerStorageGLES2::_get_gl_image_and_format(const Ref<Image> &p_
 		} break;
 		case Image::FORMAT_R8: {
 
-			r_gl_internal_format = GL_ALPHA;
-			r_gl_format = GL_ALPHA;
+			r_gl_internal_format = GL_LUMINANCE;
+			r_gl_format = GL_LUMINANCE;
 			r_gl_type = GL_UNSIGNED_BYTE;
 
 		} break;

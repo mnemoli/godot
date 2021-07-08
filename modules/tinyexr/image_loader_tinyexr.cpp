@@ -35,7 +35,7 @@
 
 #include "thirdparty/tinyexr/tinyexr.h"
 
-Error ImageLoaderTinyEXR::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale) {
+Error ImageLoaderTinyEXR::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale, float p_force_to_palette, PoolColorArray *palette, bool p_return_as_indexed) {
 
 	PoolVector<uint8_t> src_image;
 	int src_image_len = f->get_len();

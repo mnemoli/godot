@@ -201,6 +201,10 @@ private:
 	static void renormalize_half(uint16_t *p_rgb);
 	static void renormalize_rgbe9995(uint32_t *p_rgb);
 
+	static PoolColorArray petzpalette;
+
+	void get_or_load_petz_palette();
+
 public:
 	int get_width() const; ///< Get image width
 	int get_height() const; ///< Get image height
@@ -261,7 +265,7 @@ public:
 
 	PoolVector<uint8_t> get_data() const;
 
-	Error load(const String &p_path);
+	Error load(const String &p_path, const bool force_to_palette = false, const bool return_as_indexed = false);
 	Error save_png(const String &p_path) const;
 	PoolVector<uint8_t> save_png_to_buffer() const;
 	Error save_exr(const String &p_path, bool p_grayscale) const;

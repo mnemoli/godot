@@ -42,6 +42,8 @@
 
 #include <stdio.h>
 
+PoolColorArray Image::petzpalette;
+
 const char *Image::format_names[Image::FORMAT_MAX] = {
 	"Lum8", //luminance
 	"LumAlpha8", //luminance-alpha
@@ -339,6 +341,20 @@ void Image::get_mipmap_offset_size_and_dimensions(int p_mipmap, int &r_ofs, int 
 	_get_mipmap_offset_and_size(p_mipmap + 1, ofs2, w2, h2);
 	r_ofs = ofs;
 	r_size = ofs2 - ofs;
+}
+
+void Image::get_or_load_petz_palette() {
+	if (petzpalette.empty()) {
+		Ref<Image> palette_image;
+		palette_image.instance();
+		ImageLoader::load_image("res://resources/textures/petzpalette.png", palette_image);
+		palette_image->lock();
+		for (int i = 0; i < palette_image->get_width(); i++) {
+			petzpalette.push_back(palette_image->get_pixel(i, 0));
+		}
+		palette_image->unlock();
+		palette_image.unref();
+	}
 }
 
 int Image::get_width() const {
@@ -1888,13 +1904,15 @@ Image::AlphaMode Image::detect_alpha() const {
 		return ALPHA_NONE;
 }
 
-Error Image::load(const String &p_path) {
+Error Image::load(const String &p_path, const bool force_to_palette, const bool return_as_indexed) {
 #ifdef DEBUG_ENABLED
 	if (p_path.begins_with("res://") && ResourceLoader::exists(p_path)) {
 		WARN_PRINTS("Loaded resource as image file, this will not work on export: '" + p_path + "'. Instead, import the image file as an Image resource and load it normally as a resource.");
 	}
 #endif
-	return ImageLoader::load_image(p_path, this);
+	if (force_to_palette)
+		get_or_load_petz_palette();
+	return ImageLoader::load_image(p_path, this, 0, false, 1.0f, force_to_palette, &petzpalette, return_as_indexed);
 }
 
 Error Image::save_png(const String &p_path) const {
@@ -2741,7 +2759,7 @@ void Image::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("is_empty"), &Image::empty);
 
-	ClassDB::bind_method(D_METHOD("load", "path"), &Image::load);
+	ClassDB::bind_method(D_METHOD("load", "path", "force_to_palette", "return_as_indexed"), &Image::load);
 	ClassDB::bind_method(D_METHOD("save_png", "path"), &Image::save_png);
 	ClassDB::bind_method(D_METHOD("save_png_to_buffer"), &Image::save_png_to_buffer);
 	ClassDB::bind_method(D_METHOD("save_exr", "path", "grayscale"), &Image::save_exr, DEFVAL(false));

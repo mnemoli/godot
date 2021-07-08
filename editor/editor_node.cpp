@@ -97,6 +97,7 @@
 #include "editor/import/resource_importer_obj.h"
 #include "editor/import/resource_importer_scene.h"
 #include "editor/import/resource_importer_texture.h"
+#include "editor/import/resource_importer_texture_petz.h"
 #include "editor/import/resource_importer_texture_atlas.h"
 #include "editor/import/resource_importer_wav.h"
 #include "editor/import_dock.h"
@@ -5827,6 +5828,10 @@ EditorNode::EditorNode() {
 		Ref<ResourceImporterTexture> import_texture;
 		import_texture.instance();
 		ResourceFormatImporter::get_singleton()->add_importer(import_texture);
+
+		Ref<ResourceImporterTexturePetz> import_texture_petz;
+		import_texture_petz.instance();
+		ResourceFormatImporter::get_singleton()->add_importer(import_texture_petz);
 
 		Ref<ResourceImporterLayeredTexture> import_3d;
 		import_3d.instance();

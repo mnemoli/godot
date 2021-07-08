@@ -102,7 +102,7 @@ Error jpeg_load_image_from_buffer(Image *p_image, const uint8_t *p_buffer, int p
 	return OK;
 }
 
-Error ImageLoaderJPG::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale) {
+Error ImageLoaderJPG::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale, float p_force_to_palette, PoolColorArray *palette, bool p_return_as_indexed) {
 
 	PoolVector<uint8_t> src_image;
 	int src_image_len = f->get_len();

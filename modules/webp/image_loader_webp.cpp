@@ -152,7 +152,7 @@ static Ref<Image> _webp_mem_loader_func(const uint8_t *p_png, int p_size) {
 	return img;
 }
 
-Error ImageLoaderWEBP::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale) {
+Error ImageLoaderWEBP::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale, float p_force_to_palette, PoolColorArray *palette, bool p_return_as_indexed) {
 
 	PoolVector<uint8_t> src_image;
 	int src_image_len = f->get_len();

@@ -80,11 +80,14 @@ protected:
 			const uint8_t *p_buffer,
 			const uint8_t *p_color_buffer,
 			const uint32_t color_table_size,
-			const bmp_header_s &p_header);
+			const bmp_header_s &p_header,
+			const bool p_force_to_palette,
+			const PoolColorArray *p_palette,
+			const bool p_return_as_indexed);
 
 public:
 	virtual Error load_image(Ref<Image> p_image, FileAccess *f,
-			bool p_force_linear, float p_scale);
+			bool p_force_linear, float p_scale, float p_force_to_palette = false, PoolColorArray *palette = NULL, bool p_return_as_indexed = false);
 	virtual void get_recognized_extensions(List<String> *p_extensions) const;
 	ImageLoaderBMP();
 };

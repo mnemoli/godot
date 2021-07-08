@@ -145,7 +145,7 @@ Error ImageLoaderSVG::create_image_from_string(Ref<Image> p_image, const char *p
 	return _create_image(p_image, &src_data, p_scale, upsample, convert_colors);
 }
 
-Error ImageLoaderSVG::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale) {
+Error ImageLoaderSVG::load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale, float p_force_to_palette, PoolColorArray *palette, bool p_return_as_indexed) {
 
 	uint32_t size = f->get_len();
 	PoolVector<uint8_t> src_image;

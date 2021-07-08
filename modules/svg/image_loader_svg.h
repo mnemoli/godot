@@ -65,7 +65,7 @@ public:
 	static void set_convert_colors(Dictionary *p_replace_color = NULL);
 	static Error create_image_from_string(Ref<Image> p_image, const char *p_svg_str, float p_scale, bool upsample, bool convert_colors = false);
 
-	virtual Error load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale);
+	virtual Error load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale, float p_force_to_palette = false, PoolColorArray *palette = NULL, bool p_return_as_indexed = false);
 	virtual void get_recognized_extensions(List<String> *p_extensions) const;
 	ImageLoaderSVG();
 };

@@ -36,7 +36,7 @@
 class ImageLoaderJPG : public ImageFormatLoader {
 
 public:
-	virtual Error load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale);
+	virtual Error load_image(Ref<Image> p_image, FileAccess *f, bool p_force_linear, float p_scale, float p_force_to_palette = false, PoolColorArray *palette = NULL, bool p_return_as_indexed = false);
 	virtual void get_recognized_extensions(List<String> *p_extensions) const;
 	ImageLoaderJPG();
 };
