@@ -688,7 +688,7 @@ void Viewport::_process_picking() {
 				point_params.pick_point = true;
 
 				int rc = ss2d->intersect_point(point_params, res, 64);
-				if (physics_object_picking_sort) {
+				if (physics_object_picking_sort || physics_object_picking_top_only) {
 					struct ComparatorCollisionObjects {
 						bool operator()(const PhysicsDirectSpaceState2D::ShapeResult &p_a, const PhysicsDirectSpaceState2D::ShapeResult &p_b) const {
 							CollisionObject2D *a = Object::cast_to<CollisionObject2D>(p_a.collider);
@@ -735,7 +735,7 @@ void Viewport::_process_picking() {
 
 							if (send_event) {
 								co->_input_event_call(this, ev, res[i].shape);
-								if(physics_object_picking_sort) {
+								if (physics_object_picking_top_only) {
 									break;
 								}
 							}
@@ -2916,6 +2916,14 @@ bool Viewport::get_physics_object_picking_sort() {
 	return physics_object_picking_sort;
 }
 
+void Viewport::set_physics_object_picking_top_only(bool p_enable) {
+	physics_object_picking_top_only = p_enable;
+}
+
+bool Viewport::get_physics_object_picking_top_only() {
+	return physics_object_picking_top_only;
+}
+
 Vector2 Viewport::get_camera_coords(const Vector2 &p_viewport_coords) const {
 	Transform2D xf = stretch_transform * global_canvas_transform;
 	return xf.xform(p_viewport_coords);
@@ -3856,6 +3864,8 @@ void Viewport::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_physics_object_picking"), &Viewport::get_physics_object_picking);
 	ClassDB::bind_method(D_METHOD("set_physics_object_picking_sort", "enable"), &Viewport::set_physics_object_picking_sort);
 	ClassDB::bind_method(D_METHOD("get_physics_object_picking_sort"), &Viewport::get_physics_object_picking_sort);
+	ClassDB::bind_method(D_METHOD("set_physics_object_picking_top_only", "enable"), &Viewport::set_physics_object_picking_top_only);
+	ClassDB::bind_method(D_METHOD("get_physics_object_picking_top_only"), &Viewport::get_physics_object_picking_top_only);
 
 	ClassDB::bind_method(D_METHOD("get_viewport_rid"), &Viewport::get_viewport_rid);
 	ClassDB::bind_method(D_METHOD("push_text_input", "text"), &Viewport::push_text_input);
@@ -4008,6 +4018,7 @@ void Viewport::_bind_methods() {
 	ADD_GROUP("Physics", "physics_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "physics_object_picking"), "set_physics_object_picking", "get_physics_object_picking");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "physics_object_picking_sort"), "set_physics_object_picking_sort", "get_physics_object_picking_sort");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "physics_object_picking_top_only"), "set_physics_object_picking_top_only", "get_physics_object_picking_top_only");
 	ADD_GROUP("GUI", "gui_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "gui_disable_input"), "set_disable_input", "is_input_disabled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "gui_snap_controls_to_pixels"), "set_snap_controls_to_pixels", "is_snap_controls_to_pixels_enabled");

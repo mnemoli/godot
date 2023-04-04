@@ -1524,6 +1524,7 @@ SceneTree::SceneTree() {
 
 	root->set_physics_object_picking(GLOBAL_DEF("physics/common/enable_object_picking", true));
 	root->set_physics_object_picking_sort(GLOBAL_DEF("physics/common/enable_physics_object_picking_sort", false));
+	root->set_physics_object_picking_top_only(GLOBAL_DEF("physics/common/enable_physics_object_picking_top_only", false));
 
 	root->connect("close_requested", callable_mp(this, &SceneTree::_main_window_close));
 	root->connect("go_back_requested", callable_mp(this, &SceneTree::_main_window_go_back));
