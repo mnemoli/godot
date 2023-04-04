@@ -735,6 +735,9 @@ void Viewport::_process_picking() {
 
 							if (send_event) {
 								co->_input_event_call(this, ev, res[i].shape);
+								if(physics_object_picking_sort) {
+									break;
+								}
 							}
 						}
 					}
