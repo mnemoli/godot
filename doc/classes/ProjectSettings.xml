@@ -1937,12 +1937,9 @@
 		<member name="physics/common/enable_object_picking" type="bool" setter="" getter="" default="true">
 			Enables [member Viewport.physics_object_picking] on the root viewport.
 		</member>
-		<member name="physics/common/enable_physics_object_picking_sort" type="bool" setter="" getter="" default="false">
-			Enables [member Viewport.physics_object_picking_sort] on the root viewport.
-		</member>
-		<member name="physics/common/enable_physics_object_picking_top_only" type="bool" setter="" getter="" default="false">
+		<member name="physics/common/enable_object_picking_top_only" type="bool" setter="" getter="" default="false">
 			Enables [member Viewport.physics_object_picking_top_only] on the root viewport.
-			This setting will also enforce sorting as per [member physics/common/enable_physics_object_picking_sort].
+			This setting will also enforce sorting as per [member Viewport.physics_object_picking_sort].
 		</member>
 		<member name="physics/common/max_physics_steps_per_frame" type="int" setter="" getter="" default="8">
 			Controls the maximum number of physics steps that can be simulated each rendered frame. The default value is tuned to avoid "spiral of death" situations where expensive physics simulations trigger more expensive simulations indefinitely. However, the game will appear to slow down if the rendering FPS is less than [code]1 / max_physics_steps_per_frame[/code] of [member physics/common/physics_ticks_per_second]. This occurs even if [code]delta[/code] is consistently used in physics calculations. To avoid this, increase [member physics/common/max_physics_steps_per_frame] if you have increased [member physics/common/physics_ticks_per_second] significantly above its default value.
