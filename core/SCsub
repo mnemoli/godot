@@ -97,6 +97,12 @@ thirdparty_minizip_sources = ["ioapi.c", "unzip.c", "zip.c"]
 thirdparty_minizip_sources = [thirdparty_minizip_dir + file for file in thirdparty_minizip_sources]
 env_thirdparty.add_source_files(thirdparty_obj, thirdparty_minizip_sources)
 
+#kaitai
+thirdparty_kaitai_dir = "#thirdparty/kaitai/"
+thirdparty_kaitai_sources = ["GodotFileStream.cpp", "kaitaistream.cpp"]
+thirdparty_kaitai_sources = [thirdparty_kaitai_dir + file for file in thirdparty_kaitai_sources]
+env_thirdparty.add_source_files(thirdparty_obj, thirdparty_kaitai_sources)
+
 # Zstd library, can be unbundled in theory
 # though we currently use some private symbols
 # https://github.com/godotengine/godot/issues/17374
