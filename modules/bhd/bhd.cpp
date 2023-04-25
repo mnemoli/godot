@@ -11,12 +11,12 @@ bhd_t::bhd_t(kaitai::kstream* p__io, kaitai::kstruct* p__parent, bhd_t* p__root)
 	m_frames = 0;
 	f_frames = false;
 
-	try {
+//	try {
 		_read();
-	} catch(...) {
-		_clean_up();
-		throw;
-	}
+//	} catch(...) {
+//		_clean_up();
+//		throw;
+//	}
 }
 
 void bhd_t::_read() {
@@ -75,12 +75,12 @@ bhd_t::animation_t::animation_t(uint16_t p_index, kaitai::kstream* p__io, bhd_t*
 	m_frame_offsets = 0;
 	m_frame_offsets2 = 0;
 
-	try {
+//	try {
 		_read();
-	} catch(...) {
-		_clean_up();
-		throw;
-	}
+//	} catch(...) {
+//		_clean_up();
+//		throw;
+//	}
 }
 
 void bhd_t::animation_t::_read() {

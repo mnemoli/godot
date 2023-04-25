@@ -9,12 +9,12 @@ scp_t::scp_t(kaitai::kstream* p__io, kaitai::kstruct* p__parent, scp_t* p__root)
 	m_scripts = 0;
 	m__io__raw_scripts = 0;
 
-	try {
+//	try {
 		_read();
-	} catch(...) {
-		_clean_up();
-		throw;
-	}
+//	} catch(...) {
+//		_clean_up();
+//		throw;
+//	}
 }
 
 void scp_t::_read() {
