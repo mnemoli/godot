@@ -37,24 +37,48 @@ Error PetzAnimationResource::load_file(const String &path) {
 		for(int j = 0; j < offsets->size(); j++) {
 			Array ballarray;
 			bdt->seek(offsets->at(j));
-			auto headermin = Vector3(bdt->get_16(), bdt->get_16(), bdt->get_16());
-			auto headermax = Vector3(bdt->get_16(), bdt->get_16(), bdt->get_16());
+            auto x = (int16_t)bdt->get_16();
+            auto y = (int16_t)bdt->get_16();
+            auto z = (int16_t)bdt->get_16();
+			auto headermin = Vector3(x,y,z);
+            x = (int16_t)bdt->get_16();
+            y = (int16_t)bdt->get_16();
+            z = (int16_t)bdt->get_16();
+			auto headermax = Vector3(x,y,z);
 			auto tag = bdt->get_16();
 			for(int ballindex = 0; ballindex < data.num_balls(); ballindex++) {
 				Dictionary balldict;
-				balldict["position"] = Vector3(static_cast<int16_t>(bdt->get_16()),static_cast<int16_t>(bdt->get_16()),static_cast<int16_t>(bdt->get_16()));
-				balldict["rotation"] = Vector3(bdt->get_8(),bdt->get_8(),bdt->get_8());
+                x = (int16_t)bdt->get_16();
+                y = (int16_t)bdt->get_16();
+                z = (int16_t)bdt->get_16();
+				balldict["position"] = Vector3(x,y,z);
+                auto rotx = bdt->get_8();
+                auto roty = bdt->get_8();
+                auto rotz = bdt->get_8();
+				balldict["rotation"] = Vector3(rotx,roty,rotz);
 				bdt->get_8();
 				ballarray.push_back(balldict);
 			}
-			Dictionary frame_data;
+            Dictionary frame_data;
+            if(j < offsets->size() - 1 && bdt->get_position() < offsets->at(j+1)) {
+                auto sizediffscnt = bdt->get_16();
+                Dictionary sizediffs;
+                for(int k = 0; k < sizediffscnt; k++) {
+                    auto ballno = bdt->get_16();
+                    auto sizediff = bdt->get_16();
+                    sizediffs[ballno] = sizediff;
+                }
+                frame_data["sizediffs"] = sizediffs;
+            }
 			frame_data["ball_array"] = ballarray;
 			frame_data["header_min"] = headermin;
 			frame_data["header_max"] = headermax;
 			frame_data["tag"] = tag;
 			frames.push_back(frame_data);
 		}
+        bdt->close();
 	}
+    bhd->close();
 	return OK;
 }
 Array PetzAnimationResource::get_ball_sizes() {
