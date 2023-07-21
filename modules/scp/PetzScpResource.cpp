@@ -37,6 +37,7 @@ Error PetzScpResource::load_file(const String &path) {
 		action["scripts"] = scripts;
 		actions.push_back(action);
 	}
+    scp->close();
 	return OK;
 }
 int PetzScpResource::get_start_state() {

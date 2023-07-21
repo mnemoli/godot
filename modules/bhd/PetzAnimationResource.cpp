@@ -28,7 +28,8 @@ Error PetzAnimationResource::load_file(const String &path) {
 		auto frame = data.frames()->at(i);
 		auto offsets = i == 0 ? frame->frame_offsets2() : frame->frame_offsets();
 		Ref<FileAccess> bdt = FileAccess::open(path.get_base_dir() + "/" + path.get_file().get_basename() + itos(i) + ".bdt", FileAccess::READ, &error);
-		if(error != OK) {
+
+        if(error != OK) {
 			if(bhd.is_valid()) {
 				bhd->close();
 				return error;
@@ -61,6 +62,7 @@ Error PetzAnimationResource::load_file(const String &path) {
 			}
             Dictionary frame_data;
             if(j < offsets->size() - 1 && bdt->get_position() < offsets->at(j+1)) {
+
                 auto sizediffscnt = bdt->get_16();
                 Dictionary sizediffs;
                 for(int k = 0; k < sizediffscnt; k++) {

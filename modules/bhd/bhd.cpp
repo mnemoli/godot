@@ -132,7 +132,7 @@ std::vector<bhd_t::animation_t*>* bhd_t::frames() {
 	for (int i = 0; i < l_frames; i++) {
 		m_frames->push_back(new animation_t(i, m__io, this, m__root));
 	}
-	m__io->seek(_pos);
+	//m__io->seek(_pos);
 	f_frames = true;
 	return m_frames;
 }

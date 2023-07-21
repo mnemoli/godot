@@ -107,7 +107,6 @@ std::vector<scp_t::script_t*>* scp_t::action_t::scripts() {
 	for (int i = 0; i < l_scripts; i++) {
 		m_scripts->push_back(new script_t(io, this, m__root));
 	}
-	io->seek(_pos);
 	f_scripts = true;
 	return m_scripts;
 }
