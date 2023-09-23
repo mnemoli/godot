@@ -67,7 +67,7 @@ Error PetzAnimationResource::load_file(const String &path) {
                 Dictionary sizediffs;
                 for(int k = 0; k < sizediffscnt; k++) {
                     auto ballno = bdt->get_16();
-                    auto sizediff = bdt->get_16();
+                    auto sizediff = (int16_t)bdt->get_16();
                     sizediffs[ballno] = sizediff;
                 }
                 frame_data["sizediffs"] = sizediffs;

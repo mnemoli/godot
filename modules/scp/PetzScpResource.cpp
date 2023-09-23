@@ -35,7 +35,7 @@ Error PetzScpResource::load_file(const String &path) {
 			scripts.push_back(script);
 		}
 		action["scripts"] = scripts;
-		actions.push_back(action);
+		actions[kaction->action_id()] = action;
 	}
     scp->close();
 	return OK;
@@ -46,6 +46,9 @@ int PetzScpResource::get_start_state() {
 Dictionary PetzScpResource::get_action(int action_id) {
 	return actions[action_id];
 }
-Array PetzScpResource::get_actions() {
+Dictionary PetzScpResource::get_actions() {
 	return actions;
+}
+bool PetzScpResource::has_action(int action_id) {
+    return actions.has(action_id);
 }

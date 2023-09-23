@@ -12,16 +12,18 @@ protected:
 		ClassDB::bind_method(D_METHOD("get_start_state"), &PetzScpResource::get_start_state);
 		ClassDB::bind_method(D_METHOD("get_action", "action_id"), &PetzScpResource::get_action);
 		ClassDB::bind_method(D_METHOD("get_actions"), &PetzScpResource::get_actions);
+        ClassDB::bind_method(D_METHOD("has_action", "action_id"), &PetzScpResource::has_action);
 	}
 private:
 	int startState;
-	Array actions;
+	Dictionary actions;
 
 public:
 	Error load_file(const String &path);
 	int get_start_state();
 	Dictionary get_action(int action_id);
-	Array get_actions();
+    Dictionary get_actions();
+    bool has_action(int action_id);
 };
 
 #endif //GODOT_PETZSCPRESOURCE_H
